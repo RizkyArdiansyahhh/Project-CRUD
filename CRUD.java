@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 public class Main {
@@ -24,6 +26,7 @@ public class Main {
                     System.out.println("LIST SELURUH BUKU");
                     System.out.println("=================");
                     //TAMPILKAN DATA
+                    tampilkanData();
                     break;
                 case "2":
                     System.out.println("\n=========");
@@ -57,6 +60,41 @@ public class Main {
     }
 
     private static void tampilkanData() throws IOException{
+        FileReader fileInput;
+        BufferedReader bufferedinput;
+
+        try{
+            fileInput = new FileReader("database.txt");
+            bufferedinput = new BufferedReader(fileInput);
+        }catch(Exception e){
+            System.err.println("Database tidak di temukan");
+            System.err.println("Silahkan tambah data terlebih dahulu");
+            return;
+        }
+
+        System.out.println("\n----------------------------------------------------------------------------------------------");
+        System.out.println("| NO |\tTAHUN   |\tPENULIS                 |\tPENERBIT           |\tJUDUL BUKU           |");
+        System.out.println("----------------------------------------------------------------------------------------------");
+
+        String data = bufferedinput.readLine();
+        int nomordata = 0;
+        while(data != null) {
+            nomordata++;
+
+            StringTokenizer stringTokenizer = new StringTokenizer(data,",");
+            stringTokenizer.nextToken();
+
+            System.out.printf("| %2d ",nomordata);
+            System.out.printf("|\t%4s    ", stringTokenizer.nextToken());
+            System.out.printf("|\t%-20s    ", stringTokenizer.nextToken());
+            System.out.printf("|\t%-15s    ", stringTokenizer.nextToken());
+            System.out.printf("|\t%-16s     |", stringTokenizer.nextToken());
+            System.out.println();
+            data = bufferedinput.readLine();
+        }
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.println("AKHIR DARI DATA BASE");
+
 
     }
 

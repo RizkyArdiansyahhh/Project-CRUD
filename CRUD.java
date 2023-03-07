@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -33,6 +34,7 @@ public class Main {
                     System.out.println("CARI BUKU");
                     System.out.println("=========");
                     //CARI DATA
+                    cariData();
                     break;
                 case "3":
                     System.out.println("\n================");
@@ -58,7 +60,71 @@ public class Main {
             isLanjutkan = getYesOrNo("Apakah anda ingin melanjutkan");
         }
     }
+    
+    //FUNGSI DI BAWAH INI UNTUK MENCARI DATA
+    private static void cariData()throws IOException{
 
+        //Membaca database ada atau tidak
+        try{
+            File file = new File("database.txt");
+        }catch(Exception e){
+            System.err.println("Database tidak ditemukan");
+            System.err.println("Silahkan tambah data terlebih dahulu");
+        }
+
+        //Mengambil keyword dar user
+        Scanner terminalInput = new Scanner(System.in);
+        System.out.print("Masukkan Kata Kunci Untuk Mencari Buku : ");
+        String cariBuku = terminalInput.nextLine();
+        String[] keywords = cariBuku.split("\\s");
+
+        //kita cek keyword di database
+        cekBukuDiDatabase(keywords);
+
+    }
+    
+    //FUNGSI DI BAWAH INI TERUSAN DARI FUNGSI CARI DATA
+    private static void cekBukuDiDatabase(String[] keywords)throws IOException{
+
+        FileReader fileInput = new FileReader("database.txt");
+        BufferedReader bufferedInput = new BufferedReader(fileInput);
+
+        String data = bufferedInput.readLine();
+        boolean isExist;
+        int nomordata=0;
+
+        System.out.println("\n----------------------------------------------------------------------------------------------");
+        System.out.println("| NO |\tTAHUN   |\tPENULIS                 |\tPENERBIT           |\tJUDUL BUKU           |");
+        System.out.println("----------------------------------------------------------------------------------------------");
+
+        while(data != null){
+            isExist = true;
+
+            //KITA CARI KEYWORDS DI DATABASE
+            for (String keyword : keywords){
+                isExist = isExist && data.toLowerCase().contains(keyword.toLowerCase());
+            }
+            
+            //JIKA ADA MAKA TAMPILKAN
+            if (isExist){
+                nomordata++;
+
+                StringTokenizer stringTokenizer = new StringTokenizer(data,",");
+                stringTokenizer.nextToken();
+
+                System.out.printf("| %2d ",nomordata);
+                System.out.printf("|\t%4s    ", stringTokenizer.nextToken());
+                System.out.printf("|\t%-20s    ", stringTokenizer.nextToken());
+                System.out.printf("|\t%-15s    ", stringTokenizer.nextToken());
+                System.out.printf("|\t%-16s     |", stringTokenizer.nextToken());
+                System.out.println();
+            }
+            data = bufferedInput.readLine();
+        }
+        System.out.println("----------------------------------------------------------------------------------------------");
+    }
+
+    //FUNGSI DI BAWAH UNTUK MENAMPILKAN DATA
     private static void tampilkanData() throws IOException{
         FileReader fileInput;
         BufferedReader bufferedinput;
@@ -94,8 +160,6 @@ public class Main {
         }
         System.out.println("----------------------------------------------------------------------------------------------");
         System.out.println("AKHIR DARI DATA BASE");
-
-
     }
 
     //FUNGSI DI BAWAH UNTUK MENGECUALIKAN INPUT USER SELAIN Y/N
@@ -123,6 +187,5 @@ public class Main {
         }catch(Exception e){
             System.out.println("Tidak bisa clear screen");
         }
-
     }
 }
